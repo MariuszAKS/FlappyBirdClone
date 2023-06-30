@@ -21,4 +21,16 @@ public class Player_Controller : MonoBehaviour
             rb2d.velocity = new Vector2(0, jumpVelocity);
         }
     }
+
+    private void OnTriggerEnter2D(Collider2D collider) {
+        if (collider.CompareTag("Wall")) {
+            Debug.Log("Splattered all over the outer ring");
+        } else if (collider.CompareTag("Ceiling")) {
+            Debug.Log("Icarus flew too close to the sun");
+        } else if (collider.CompareTag("Floor")) {
+            Debug.Log("You're too grounded in reality");
+        }
+
+        Debug.Log("GAME OVER (to be implemented)");
+    }
 }
