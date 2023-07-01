@@ -11,6 +11,8 @@ public class Player_Controller : MonoBehaviour
     [SerializeField] float jumpVelocity;
     [SerializeField] float gravity;
 
+
+
     void Start()
     {
         rb2d = GetComponent<Rigidbody2D>();
@@ -18,16 +20,19 @@ public class Player_Controller : MonoBehaviour
 
     void Update()
     {
-        if (Game_Controller.instance.gameRunning) {
-            if (Input.GetKeyDown(KeyCode.Space)) {
-                rb2d.velocity = new Vector2(0, jumpVelocity);
-            }
-
-            rb2d.velocity -= new Vector2(0, gravity) * Time.deltaTime;
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            rb2d.velocity = new Vector2(0, jumpVelocity);
         }
+
+        rb2d.velocity -= new Vector2(0, gravity) * Time.deltaTime;
     }
 
     private void OnTriggerEnter2D(Collider2D collider) {
+        if (collider.CompareTag("Passage")) {
+            Game_Controller.instance.IncreaseScore();
+            return;
+        }
+
         string message = "";
 
         if (collider.CompareTag("Wall")) {
@@ -39,5 +44,12 @@ public class Player_Controller : MonoBehaviour
         }
 
         Game_Controller.instance.GameOver(message);
+    }
+
+
+
+    public void StartingPosition() {
+        transform.position = new Vector3(0, 0, 0);
+        rb2d.velocity = Vector2.zero;
     }
 }
