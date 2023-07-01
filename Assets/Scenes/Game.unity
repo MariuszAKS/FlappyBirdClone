@@ -395,6 +395,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnDelaySeconds: 2
   Wall: {fileID: 634782400885944136, guid: da6ec4cc7abb530499f66340c6f36c20, type: 3}
+  Player: {fileID: 1792395151}
+  gameRunning: 0
 --- !u!1 &1518023092
 GameObject:
   m_ObjectHideFlags: 0
@@ -553,6 +555,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   jumpVelocity: 3
+  gravity: 10
 --- !u!58 &1792395155
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -577,7 +580,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1792395151}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0

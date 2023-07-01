@@ -9,6 +9,7 @@ public class Player_Controller : MonoBehaviour
     Rigidbody2D rb2d;
 
     [SerializeField] float jumpVelocity;
+    [SerializeField] float gravity;
 
     void Start()
     {
@@ -17,20 +18,26 @@ public class Player_Controller : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            rb2d.velocity = new Vector2(0, jumpVelocity);
+        if (Game_Controller.instance.gameRunning) {
+            if (Input.GetKeyDown(KeyCode.Space)) {
+                rb2d.velocity = new Vector2(0, jumpVelocity);
+            }
+
+            rb2d.velocity -= new Vector2(0, gravity) * Time.deltaTime;
         }
     }
 
     private void OnTriggerEnter2D(Collider2D collider) {
+        string message = "";
+
         if (collider.CompareTag("Wall")) {
-            Debug.Log("Splattered all over the outer ring");
+            message = "Splattered all over the outer ring";
         } else if (collider.CompareTag("Ceiling")) {
-            Debug.Log("Icarus flew too close to the sun");
+            message = "Icarus flew too close to the sun";
         } else if (collider.CompareTag("Floor")) {
-            Debug.Log("You're too grounded in reality");
+            message = "You're too grounded in reality";
         }
 
-        Debug.Log("GAME OVER (to be implemented)");
+        Game_Controller.instance.GameOver(message);
     }
 }
