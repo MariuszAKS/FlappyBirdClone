@@ -11,17 +11,21 @@ public class Player_Controller : MonoBehaviour
     [SerializeField] float jumpVelocity;
     [SerializeField] float gravity;
 
+    Animator anim;
+
 
 
     void Start()
     {
         rb2d = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space)) {
             rb2d.velocity = new Vector2(0, jumpVelocity);
+            anim.SetTrigger("Bird_WingFlap_Trigger");
         }
 
         rb2d.velocity -= new Vector2(0, gravity) * Time.deltaTime;
