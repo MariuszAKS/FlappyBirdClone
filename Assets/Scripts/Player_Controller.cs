@@ -12,6 +12,11 @@ public class Player_Controller : MonoBehaviour
     [SerializeField] float gravity;
 
 
+    [SerializeField] AudioSource audio_WingFlap;
+    [SerializeField] AudioSource audio_PointGain;
+    [SerializeField] AudioSource audio_WallHit;
+
+
 
     void Start()
     {
@@ -22,6 +27,7 @@ public class Player_Controller : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space)) {
             rb2d.velocity = new Vector2(0, jumpVelocity);
+            audio_WingFlap.Play();
         }
 
         rb2d.velocity -= new Vector2(0, gravity) * Time.deltaTime;
@@ -29,6 +35,7 @@ public class Player_Controller : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider) {
         if (collider.CompareTag("Passage")) {
+            audio_PointGain.Play();
             Game_Controller.instance.IncreaseScore();
             return;
         }
@@ -43,6 +50,7 @@ public class Player_Controller : MonoBehaviour
             message = "You're too grounded in reality";
         }
 
+        audio_WallHit.Play();
         Game_Controller.instance.GameOver(message);
     }
 
