@@ -17,6 +17,8 @@ public class Game_Controller : MonoBehaviour
     [SerializeField] GameObject GameOverScreen;
     TextMeshProUGUI GameOver_Message;
     TextMeshProUGUI GameOver_Score;
+    TMP_InputField Input_PlayerName;
+    bool scoreboardEntrySaved;
 
 
 
@@ -27,8 +29,10 @@ public class Game_Controller : MonoBehaviour
         
         GameOver_Message = GameOverScreen.transform.Find("Text_Message").GetComponent<TextMeshProUGUI>();
         GameOver_Score = GameOverScreen.transform.Find("Text_Score").GetComponent<TextMeshProUGUI>();
+        Input_PlayerName = GameOverScreen.transform.Find("Input_PlayerName").GetComponent<TMP_InputField>();
         GameOverScreen.SetActive(false);
 
+        scoreboardEntrySaved = false;
         Time.timeScale = 1;
         
         StartCoroutine(SpawnWall_Timer());
@@ -60,6 +64,16 @@ public class Game_Controller : MonoBehaviour
 
 
 
+    public void SaveScoreboardEntry() {
+        if (scoreboardEntrySaved) {
+            return;
+        }
+
+        string Player_Name = string.IsNullOrEmpty(Input_PlayerName.text) ? "Bezimienny" : Input_PlayerName.text;
+        Scoreboard_Controller.instance.UpdateScoreboard(Player_Name, Player_Score);
+        scoreboardEntrySaved = true;
+    }
+
     public void RestartGame() {
         Player_Score = 0;
         Text_Score.text = Player_Score.ToString();
@@ -72,6 +86,7 @@ public class Game_Controller : MonoBehaviour
 
         Player.GetComponent<Player_Controller>().StartingPosition();
         
+        scoreboardEntrySaved = false;
         Time.timeScale = 1;
     }
 
