@@ -1,10 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class Background_Controller : MonoBehaviour
 {
     const float pi = Mathf.PI;
+
+    [SerializeField] Light2D backgroundLight;
+    [SerializeField] Light2D sunLight, moonLight;
+    bool dayLight, nightLight;
 
     [SerializeField] float sunSpeed;
     [SerializeField] float moonSpeed;
@@ -14,7 +19,7 @@ public class Background_Controller : MonoBehaviour
 
     GameObject Sun;
     GameObject Moon;
-    float sunAngle;
+    [SerializeField] float sunAngle;
     float moonAngle;
     float celestialRadius;
     Vector2 celestialAnchor;
@@ -40,8 +45,8 @@ public class Background_Controller : MonoBehaviour
         
         Sun = transform.Find("Sun").gameObject;
         Moon = transform.Find("Moon").gameObject;
-        sunAngle = 1.5f * pi;
-        moonAngle = 0.5f * pi;
+        sunAngle = 0;
+        moonAngle = pi;
         celestialRadius = 6.5f;
         celestialAnchor = new Vector2(0, -3);
     }
@@ -53,6 +58,11 @@ public class Background_Controller : MonoBehaviour
         MovePartOfBackground(ref Clouds, cloudsSpeed);
         MovePartOfBackground(ref Background, backgroundSpeed);
         MovePartOfBackground(ref Foreground, foregroundSpeed);
+
+        UpdateLighting(sunAngle);
+
+        sunLight.intensity = sunAngle > pi/2 && sunAngle < pi*3/2 ? 0 : .3f;
+        moonLight.intensity = moonAngle > pi/2 && moonAngle < pi*3/2 ? 0 : .3f;
     }
 
     void MovePartOfBackground(ref GameObject[] parts, float speed) {
@@ -78,8 +88,55 @@ public class Background_Controller : MonoBehaviour
 
         float xPos = celestialAnchor.x + celestialRadius * Mathf.Sin(angle);
         float yPos = celestialAnchor.y + celestialRadius * Mathf.Cos(angle);
-        Debug.Log($"{xPos} {yPos}");
 
         celestial.transform.position = new Vector3(xPos, yPos, 0);
+    }
+
+    void UpdateLighting(float angle) {
+        float colorsGB = -1;
+        float intensity = -1;
+
+        if (angle > pi*19/12 || angle < pi*5/12) { // full day
+            if (!dayLight) {
+                backgroundLight.color = Color.white;
+                backgroundLight.intensity = .8f;
+
+                dayLight = true;
+                nightLight = false;
+            }
+
+        } else if (angle < pi*7/12) { // transition from dayLight to nightLight
+            if (angle < pi/2) {
+                colorsGB = 1-((angle-pi*5/12)/(pi/12)*.6f);
+                backgroundLight.color = new Color(1, colorsGB, colorsGB);
+            } else {
+                colorsGB = (angle-pi/2)/(pi/12)*.6f+.4f;
+                backgroundLight.color = new Color(1, colorsGB, colorsGB);
+            }
+            
+            intensity = 1-((angle-pi*5/12)/(pi/6)*.6f+.2f);
+            backgroundLight.intensity = intensity;
+
+        } else if (angle < pi*17/12) { // full night
+            if (!nightLight) {
+                backgroundLight.color = Color.white;
+                backgroundLight.intensity = .2f;
+
+                dayLight = false;
+                nightLight = true;
+            }
+
+        } else if (angle < pi*19/12) { // transition from nightLight to dayLight
+            if (angle < pi*3/2) {
+                colorsGB = 1-((angle-pi*17/12)/(pi/12)*.6f);
+                backgroundLight.color = new Color(1, colorsGB, colorsGB);
+            } else {
+                colorsGB = (angle-pi*3/2)/(pi/12)*.6f+.4f;
+                backgroundLight.color = new Color(1, colorsGB, colorsGB);
+            }
+            
+            intensity = (angle-pi*17/12)/(pi/6)*.6f+.2f;
+            backgroundLight.intensity = intensity;
+        }
     }
 }
