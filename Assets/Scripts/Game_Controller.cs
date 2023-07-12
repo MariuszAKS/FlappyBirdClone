@@ -13,6 +13,7 @@ public class Game_Controller : MonoBehaviour
     public GameObject Player;
     int Player_Score;
 
+    [SerializeField] GameObject Background;
     [SerializeField] TextMeshProUGUI Text_Score;
     [SerializeField] GameObject GameOverScreen;
     TextMeshProUGUI GameOver_Message;
@@ -85,6 +86,7 @@ public class Game_Controller : MonoBehaviour
         DeleteAllWalls();
 
         Player.GetComponent<Player_Controller>().StartingPosition();
+        Background.GetComponent<Background_Controller>().ResetBackground();
         
         scoreboardEntrySaved = false;
         Time.timeScale = 1;
